@@ -1,0 +1,26 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{hyperref}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{circuitikz}
+\usepackage{cancel}
+
+\pgfplotsset{compat=1.18}
+
+\title{Analisis de convertidor SEPIC}
+\author{Tomás Aguayo Briones}
+\date{\today}
+
+\begin{document}
+\maketitle
+\input{secciones/analisis_conv.tex}
+\clearpage
+\input{secciones/dinamica.tex}
+\end{document}

@@ -1,0 +1,114 @@
+\begin{align*}
+    I_{RMS}=\sqrt{\frac{1}{T}\int_{0}^{T}\left(\frac{V_{cc}}{R}e^{-\frac{t}{RC}}\right)^2dt}
+\end{align*}
+
+\section{Dinámica}
+
+$S_w=1$
+\begin{align*}
+    \frac{di_{L_1}(t)}{dt}&=\frac{v_i}{L_1} \\ 
+    \frac{di_{L_2}(t)}{dt}&=\frac{v_{C_1}}{L_2} \\ 
+    \frac{dv_{C_1}(t)}{dt}&=-\frac{i_{L_2}(t)}{C_1} \\ 
+    \frac{dv_{C_2}(t)}{dt}&=-\frac{v_{C_2}}{R\cdot C_2}
+\end{align*}
+
+\begin{align*}
+    \begin{bmatrix}
+        \dot{i_{L_1}} \\ 
+        \dot{i_{L_2}} \\ 
+        \dot{v_{C_1}} \\ 
+        \dot{v_{C_2}}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        0 & 0 & 0 & 0 \\ 
+        0 & 0 & \frac{1}{L_2} & 0 \\ 
+        0 & -\frac{1}{C_1} & 0 & 0 \\ 
+        0 & 0 & 0 & -\frac{1}{R\cdot C_2}
+    \end{bmatrix}
+    \begin{bmatrix}
+        i_{L_1} \\ 
+        i_{L_2} \\ 
+        v_{C_1} \\ 
+        v_{C_2}
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+        \frac{1}{L_1} \\ 
+        0 \\ 
+        0 \\ 
+        0 
+    \end{bmatrix}
+    v_i
+\end{align*}
+
+$S_w=0$
+\begin{align*}
+    \frac{di_{L_1}(t)}{dt}&=-\frac{1}{L_1}(v_{C_1}+v_{C_2})+\frac{v_i}{L_1} \\ 
+    \frac{di_{L_2}(t)}{dt}&=-\frac{v_{C_2}}{L_2} \\ 
+    \frac{dv_{C_1}(t)}{dt}&=\frac{i_{L_1}}{C_1} \\ 
+    \frac{dv_{C_2}(t)}{dt}&=\frac{1}{C_2}(i_{L_1}+i_{L_2})-\frac{v_{C_2}}{R \cdot C_2}
+\end{align*}
+
+\begin{align*}
+    \begin{bmatrix}
+        \dot{i_{L_1}} \\ 
+        \dot{i_{L_2}} \\ 
+        \dot{v_{C_1}} \\ 
+        \dot{v_{C_2}}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        0 & 0 & -\frac{1}{L_1} & -\frac{1}{L_1} \\ 
+        0 & 0 & 0 & -\frac{1}{L_2} \\ 
+        \frac{1}{C_1} & 0 & 0 & 0 \\ 
+        \frac{1}{C_2} & \frac{1}{C_2} & 0 & -\frac{1}{R\cdot C_2}
+    \end{bmatrix}
+    \begin{bmatrix}
+        i_{L_1} \\ 
+        i_{L_2} \\ 
+        v_{C_1} \\ 
+        v_{C_2}
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+        \frac{1}{L_1} \\ 
+        0 \\ 
+        0 \\ 
+        0 
+    \end{bmatrix}
+    v_i
+\end{align*}
+
+Calculando el modelo promedio del convertidor
+
+\begin{align*}
+    A=A_{on}\cdot D + A_{off} (1-D) \\
+    B=B_{on}\cdot D + B_{off} (1-D) 
+\end{align*}
+
+\begin{align*}
+    A
+    &=
+    \begin{bmatrix}
+        0 & 0 & -\frac{(1-D)}{L_1} & -\frac{(1-D)}{L_1} \\ 
+        0 & 0 & \frac{D}{L_2} & -\frac{(1-D)}{L_2} \\ 
+        \frac{(1-D)}{C_1} & -\frac{D}{C_1} & 0 & 0 \\ 
+        \frac{(1-D)}{C_2} & \frac{(1-D)}{C_2} & 0 & -\frac{1}{R\cdot C_2}
+    \end{bmatrix} \\ 
+    B 
+    &=
+    \begin{bmatrix}
+        \frac{1}{L_1} \\ 
+        0 \\ 
+        0 \\ 
+        0 
+    \end{bmatrix}
+\end{align*}
+\begin{align*}
+    &\frac{di_{L_1}(t)}{dt}=-\frac{(1-D(t))}{L_1} v_{C_1}(t)-\frac{(1-D(t))}{L_1}v_{C_2}(t) + \frac{v_{i}(t)}{L_1}\\ 
+    &\frac{di_{L_2}(t)}{dt}=\frac{D(t)}{L_2}v_{C_1}(t) - \frac{(1-D(t))}{L_2}v_{C_2}(t) \\ 
+    &\frac{dv_{C_1}(t)}{dt}=\frac{(1-D(t))}{C_1}i_{L_1}(t)-\frac{D(t)}{C_1}i_{L_2}(t)\\ 
+    &\frac{dv_{C_2}(t)}{dt}=\frac{(1-D(t))}{C_2}i_{L_1}(t)+\frac{(1-D(t))}{C_2}i_{L_2}(t)-\frac{v_{C_2}(t)}{R C_{C_2}}
+\end{align*}
+

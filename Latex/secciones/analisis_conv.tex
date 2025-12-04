@@ -1,0 +1,237 @@
+\section{Analisis de convertidor}
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[american][scale=0.8]
+	% Paths, nodes and wires:
+	\draw (5, 8) to[cute inductor, l={$L_1$},v=$v_{L_1}$ ] (8, 8);
+	\draw (5, 8) to[american voltage source, v={$v_{i}$} ] (5, 5);
+	\draw (8, 8) to[curved capacitor, l={$C_1$},v=$v_{C_1}$ ] (11, 8);
+	\node[nigfete] at (8, 6.52){};
+	\draw (11, 8) to[cute inductor,,l={$L_2$}] (11, 5);
+	\draw (8, 8) -| (8, 7.29);
+	\draw (5, 5) -- (11, 5);
+	\draw (8, 5.75) -| (8, 5);
+	\draw (11, 8) to[diode] (14, 8);
+	\draw (14, 8) to[curved capacitor, l={$C_2$},v=$v_{C_2}$, i=$i_{C_2}$] (14, 5);
+	\draw (11, 5) -- (14, 5);
+	\draw (17, 8) to[european resistor, l={$R$},v=$v_o$,i=$i_{o}$] (17, 5);
+	\draw (14, 8) -- (17, 8);
+	\draw (17, 5) -- (14, 5);
+    \end{tikzpicture}
+    \caption{Convertidor SEPIC}
+    \label{fig:circuitio}
+\end{figure}
+
+\subsection{Paso 1}
+Como primer paso se calculan las ecuaciones cuando $\mathbf{SW=1}$.
+\begin{align*}
+	v_{L_1}=v_i \ ; \ v_{C_1}=v_{L_2}
+\end{align*}
+
+Ahora en el estado de $\mathbf{SW=0}$.
+\begin{align*}
+	v_i+v_{L_2}=v_{C_1}+v_{L_1} \ ; \ v_{L_2}=-v_o
+\end{align*}
+\subsection{Paso 2}
+Analizando primero $\mathbf{L_1}$, en ambos estados:
+\begin{align*}
+	L_1  \frac{d i_{L_1on}}{dt}=v_i \iff L_1  \frac{\Delta i_{L_{1on}}}{DT}&=v_i \iff \Delta i_{L_{1on}}=\frac{v_i \cdot DT}{L_1} \\
+	v_{L_{1off}}=v_i+v_{L_2}-v_{C_1} \iff \frac{\Delta i_{L_{1off}}}{(1-D)T}&=v_i-v_{o}-v_{C_1} \iff \Delta i_{L_{1off}} =(v_i-v_{o}-v_{C_1})\frac{(1-D)T}{L_1}
+\end{align*}
+
+Ahora bien, en regimen permanente la corriente de la bobina en regimen permanente tiene que ser la misma en el inicio y el final del ciclo.
+Por lo que:
+
+\begin{align}
+	\Delta i_{L_{1on}} + \Delta i_{L_{1off}} &= 0 \notag\\ 
+	\frac{v_i \cdot DT}{L_1}+(v_i-v_{o}-v_{C_1})\frac{(1-D)T}{L_1}&=0 \Big/ \cdot \frac{L_1}{(1-D)T} \notag\\ 
+	v_i \frac{D}{(1-D)}+v_i&=v_o+v_{C_1} \notag\\ 
+	\frac{v_i}{(1-D)}&=v_o+v_{C_1} \label{eq:L1cic}
+\end{align}
+
+\newpage
+Se continua con $\mathbf{L_2}$:
+\begin{align*}
+	v_{L_{2on}}=v_{C_1} \iff L_2 \frac{\Delta i_{L_{2on}}}{DT}&=v_{C_1} \iff \Delta i_{L_{2on}}=\frac{v_{C_1}DT}{L_2} \\ 
+    v_{L_{2off}}=-v_o \iff L_2 \frac{\Delta i_{L_{2off}}}{(1-D)T}&=-v_o \iff \Delta i_{L_{2off}}= -\frac{v_o(1-D)T}{L_2}
+\end{align*}
+
+Mismo principio aplicado con el primer inductor, la corriente al inicio y al final del ciclo tiene que ser igual. Por lo tanto:
+
+\begin{align}
+    \Delta i_{L_{2on}}+\Delta i_{L_{2off}}&=0  \notag\\
+    \frac{v_{C_1}DT}{L_2}-\frac{v_o(1-D)T}{L_2}&=0 \Big/ \cdot \frac{L_2}{T}  \notag\\ 
+    v_{C_1}D-v_o(1-D)&=0 \notag\\ 
+    v_{C_1}D+v_oD-v_o&=0 \notag\\
+    v_o+v_{C_1}&=\frac{v_o}{D} \label{eq:L2cic}
+\end{align}
+
+Ahora bien, reemplazando \autoref{eq:L1cic} en \autoref{eq:L2cic}, se obtiene la siguiente expresion:
+\begin{align}
+    \frac{v_o}{D}&=\frac{v_i}{(1-D)} \notag \\
+    \frac{v_o}{v_i}&=\frac{D}{(1-D)} \label{eq:gain_sepic}
+\end{align}
+
+\subsection{Paso 3}
+
+Teniendo la relacion entre la entrada y salida del convertidor, se reemplaza la \autoref{eq:gain_sepic} en \autoref{eq:L1cic},
+obteniendo lo siquiente:
+\begin{align*}
+    v_i\frac{D}{(1-D)}+v_{C_1}&=\frac{v_i}{(1-D)} \\ 
+    v_i \frac{\cancel{1-D}}{\cancel{(1-D)}}&=v_{C_1} \\ 
+    v_i&=v_{C_1}
+\end{align*}
+
+De aqui se puede obtener que las variaciones de corriente en los inductores son:
+\begin{align*}
+    \Delta i_{L_{1on}}=\frac{v_iDT}{L_1};\Delta i_{L_{1off}}=-\frac{v_o(1-D)T}{L_1} \\
+    \Delta i_{L_{2on}}=\frac{v_iDT}{L_2};\Delta i_{L_{2off}}=-\frac{v_o(1-D)T}{L_2}
+\end{align*}
+\textit{Nota: son todas la misma ecuacion, usando \autoref{eq:gain_sepic}, se obtiene la misma expresion.}
+\subsection{Paso 4(Inductancia minima)}
+
+Ahora bien, en este convertidor, la bobina $L_2$ entrega la corriente\textbf{(se utilizara mayuscula para denotar promedios)} hacia la carga, por lo que:
+\begin{align*}
+    I_{L_2}=\frac{V_o}{R}
+\end{align*}
+Asumiendo que no hay perdidas en el convertidor y que la corriente de entrada es igual a la corriente en $L_1$, el balance de potencia entrega:
+\begin{align*}
+    P_i&=P_o \\ 
+    V_i\cdot I_i &= V_o \cdot I_o \\ 
+    I_i&=\frac{V_o}{V_i}\cdot I_o \\
+    I_i&=\frac{D}{(1-D)}I_o \\ 
+    I_{L_1}&=\frac{D}{(1-D)}I_{L_2}
+\end{align*}
+Ahora bien, para la bobina $L_1$, se calculan los valores minimos y maximos de corriente. Asi se tiene:
+\begin{align*}
+    I_{L_{1max}}&=I_{L_1}+\frac{\Delta i_{L_1}}{2} \\ 
+    &=\frac{D}{(1-D)}I_{L_2}+\frac{v_iDT}{2 L_1} \Big/ I_{L_2}=I_o=\frac{v_o}{R} \\ 
+    &=\frac{D}{(1-D)}\frac{v_o}{R}+\frac{v_o(1-D)T}{2 L_1} \\ 
+    &=\frac{D}{(1-D)}\frac{v_o}{R}+\frac{v_o(1-D)T}{2 L_1} \\ 
+    &=v_o\left(\frac{D}{(1-D)}\frac{1}{R}+\frac{(1-D)}{2 L_1 f}\right) \\ 
+    I_{L_{1min}}&=I_{L_1}-\frac{\Delta i_{L_1}}{2} \\ 
+    &=v_o\left(\frac{D}{(1-D)}\frac{1}{R}-\frac{(1-D)}{2 L_1 f}\right) \\ 
+\end{align*}
+
+Para que el convertidor funcione en \textbf{CCM}, la corriente minima del inductor tiene que ser positiva, debido a que se trabajaria con corriente discontinua,
+haciendo que el analisis no describa al sistema, por lo que:
+\begin{align*}
+    0&=v_o\left(\frac{D}{(1-D)}\frac{1}{R}-\frac{(1-D)}{2 L_{1_{min}} f}\right) \\ 
+    0&=\frac{D}{(1-D)}\frac{1}{R}-\frac{(1-D)}{2 L_{1_{min}} f} \\
+    \frac{(1-D)}{2 L_{1_{min}} f}&=\frac{D}{(1-D)}\frac{1}{R} \\ 
+    L_{1_{min}} f&= \frac{R(1-D)^2}{2 D} \\ 
+    L_{1_{min}}&=\frac{R(1-D)^2}{2f D}
+\end{align*}
+
+A continuacion se realiza el mismo analisis para la bobina $L_2$:
+\begin{align*}
+    I_{L_{2max}}&=I_{L_2}+\frac{\Delta i_{L_2}}{2} \\ 
+    &=\frac{v_o}{R}+\frac{v_o(1-D)T}{2L_2} \\ 
+    &=v_o\left(\frac{1}{R}+\frac{(1-D)}{2L_2f}\right) \\ 
+    I_{L_{2min}}&=I_{L_2}+\frac{\Delta i_{L_2}}{2} \\ 
+    &=v_o\left(\frac{1}{R}-\frac{(1-D)}{2L_2f}\right)
+\end{align*}
+
+Misma logica que con el anterior inductor. Para que se mantenga en \textbf{CCM}, es necesario que la corriente minima sea positiva, por lo que:
+\begin{align*}
+    0&=v_o\left(\frac{1}{R}-\frac{(1-D)}{2L_{2_{min}}f}\right) \\ 
+    \frac{1}{R}&=\frac{(1-D)}{2L_{2_{min}}f} \\ 
+    L_{2_{min}}f&=\frac{(1-D)R}{2} \\ 
+    L_{2_{min}}&=\frac{(1-D)R}{2 f}
+\end{align*}
+
+\newpage
+\subsection{Paso 5(Rizado de Voltaje de capacitores)}
+Planteando las ecuaciones de nodos de los capacitores en $\mathbf{SW=1}$ se obtiene que:
+\begin{align*}
+    i_{C_1}=-i_{L_2} \ ; \ i_{C_2}=-i_o
+\end{align*}
+
+
+Con $\mathbf{SW=0}$:
+\begin{align*}
+    i_{C_1}=i_{L_1} \ ; \ i_{C_2}=i_{L_1}+i_{L_2}-i_o 
+\end{align*}
+
+Para $\mathbf{C_1}$,La capacitancia se define de la siguiente forma:
+\begin{align*}
+    C_1&=\frac{Q}{V_{C_1}} \\ 
+    \Delta V_{C_1} &= \frac{\Delta Q}{C_1} \\ 
+\end{align*}
+
+Despreciando el ripple de corriente que ocurre en el inductor, se tiene:
+\begin{align*}
+    \Delta V_{C_1}&= \frac{I_oDT}{C_1} \iff \Delta V_{C_1}= \frac{I_oD}{C_1 f} \\ 
+    \Delta V_{C_1}&= \frac{D}{C_1 f}\frac{V_o}{R} \\ 
+    \frac{\Delta V_{C_1}}{V_o}&= \frac{D}{C_1 f}\frac{1}{R} \\ 
+    \frac{\Delta V_{C_1}}{V_i}&= \frac{D^2}{C_1 f}\frac{1}{R}\frac{1}{(1-D)}
+\end{align*}
+
+Aplicando el mismo método para $\mathbf{C_2}$, se tiene que: 
+\begin{align*}
+    C_2&=\frac{Q}{V_{C_2}} \\ 
+    \Delta V_{C_2}&= \frac{\Delta Q}{C_2} \\ 
+    \Delta V_{C_2}&= \frac{I_oDT}{C_2} \\ 
+    \frac{\Delta V_{C_2}}{V_o}&= \frac{D}{C_2f}\frac{1}{R} \\ 
+    \frac{\Delta V_{C_o}}{V_o}&= \frac{D}{C_2f}\frac{1}{R}
+\end{align*}
+
+\newpage
+\subsection{Paso 6(Rizado de corriente)}
+
+Utilizando el balance de potencia se obtiene la siguiente expresión:
+\begin{align*}
+    P_i&=P_o \\ 
+    V_iI_i&=V_oI_o \\ 
+    I_{L_1}&=\frac{v_o}{v_i}I_o 
+\end{align*}
+
+Ahora bien para calcular el rizado del primer inductor se aplica la definición de rizado:
+\begin{align*}
+    \frac{\Delta i_{L_1}}{I_{L1}}&=\frac{\frac{v_iDT}{L_1}}{\frac{v_o}{v_i}I_o} \\ 
+    &=\frac{v_i^2DT}{v_o I_o L_1} \Big/ \frac{v_o}{v_i}=\frac{D}{(1-D)} \\ 
+    &=\frac{\frac{(1-D)^2}{D^2}v_o^2 DT}{v_o I_o L_1} \\ 
+    &=\frac{\frac{(1-D)^{2}}{D^{\cancel{2}}}v_o^{\cancel{2}} \cancel{D}T}{\cancel{v_o} I_o L_1}=\frac{(1-D)^2v_o}{D I_o L_1 f} \\ 
+    &=\frac{(1-D)^2\cancel{v_o}}{D \frac{\cancel{v_o}}{R} L_1 f} \\ 
+    &=\frac{(1-D)^2 R}{D  L_1 f} \\ 
+\end{align*}
+
+Se aplica el mismo método para el segundo inductor:
+\begin{align*}
+    \frac{\Delta i_{L_2}}{I_{L_2}}&=\frac{\frac{v_i DT}{L_2}}{\frac{v_i}{v_o}I_i} \\ 
+    &=\frac{\cancel{v_i} v_o DT}{\cancel{v_i} I_i L_2} \\ 
+    &=\frac{DT}{L_2}\frac{v_o}{I_i} \Big/ I_i=\frac{D}{(1-D)}I_o \\ 
+    &=\frac{DT}{L_2}\frac{v_o}{I_o}\frac{(1-D)}{D} \\ 
+    &=\frac{\cancel{D}T}{L_2}\frac{v_o}{I_o}\frac{(1-D)}{\cancel{D}} \Big/ R=\frac{v_o}{I_o} \\ 
+    &=\frac{(1-D)R}{L_2 f}
+\end{align*}
+
+\clearpage
+\subsection{Resumen de ecuaciones}
+\begin{align*}
+    \frac{V_o}{V_i}=\frac{D}{(1-D)} ; V_{C_1}=V_i
+\end{align*}
+\subsubsection*{Ripple de capacitores}
+\begin{align*}
+    \frac{\Delta V_{C_1}}{V_i}&=\frac{D^2}{C_1 f R (1-D)} \\ 
+    \frac{\Delta V_{o}}{V_o}&=\frac{D}{C_2 f R}
+\end{align*}
+
+\subsubsection*{Ripple de inductores}
+\begin{align*}
+    \frac{\Delta i_{L_1}}{I_{L_1}}&=\frac{(1-D)^2R}{D L_1 f} \\ 
+    \frac{\Delta i_{L_2}}{I_{L_2}}&=\frac{(1-D)R}{L_2 f} \\ 
+\end{align*}
+\subsubsection*{Corrientes en inductores}
+\begin{align*}
+    I_{L_{1max}}&=v_o\left(\frac{D}{(1-D)}\frac{1}{R}+\frac{(1-D)}{2 L_1 f}\right) \\
+    I_{L_{1min}}&=v_o\left(\frac{D}{(1-D)}\frac{1}{R}-\frac{(1-D)}{2 L_1 f}\right) \\ 
+    I_{L_{2max}}&=v_o\left(\frac{1}{R}+\frac{(1-D)}{2L_2f}\right) \\ 
+    I_{L_{2min}}&=v_o\left(\frac{1}{R}-\frac{(1-D)}{2L_2f}\right)
+\end{align*}
+\subsubsection*{Inductancias mínimas}
+\begin{align*}
+    L_{1_{min}}&=\frac{R(1-D)^2}{2f D} \\ 
+    L_{2_{min}}&=\frac{(1-D)R}{2 f}
+\end{align*}
+
