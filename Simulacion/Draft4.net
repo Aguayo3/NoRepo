@@ -1,0 +1,23 @@
+* \\wsl.localhost\Ubuntu\home\aguayo\NoRepo\Simulacion\Draft4.asc
+C1 N001 N002 2.2µ
+C2 Vo 0 54µ Rser=0.3
+R1 Vo 0 500
+V1 Vi 0 24
+V2 pwm 0 PULSE(0 15 0 1n 1n {D*T} {T})
+L1 Vi N001 3m Rser=1
+L2 0 N002 3m Rser=1
+D1 N002 Vo D
+S1 N001 0 pwm 0 MySW
+C3 N001 0 1p
+.model D D
+.lib C:\Users\aguay\AppData\Local\LTspice\lib\cmp\standard.dio
+.tran 0 100m 0
+.param D={1/3}
+.param f=100e3
+.param T {1/f}
+.model MyD D (Ron=.00001 Roff=1Meg Vfwd=0.001)
+.model MySW SW (Ron=.1 Roff=1Meg Vt=5)
+.include irf520n.spi
+.step param D list 0.33333 0.5 0.66667
+.backanno
+.end
